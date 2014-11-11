@@ -7,7 +7,7 @@
         	var domain = location.hostname;
         	alert(domain);
 
-            var ws = new WebSocket("ws://"+domain+"/service/WebSocketServer/Post");/*
+            var ws = new WebSocket("ws://"+domain+":8080/WebSocketServer/Post");/*
             var ws = new WebSocket("ws://localhost:8080/WebSocketServer/Post");*/
             ws.onopen = function(){
             };
