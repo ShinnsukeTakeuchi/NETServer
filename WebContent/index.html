@@ -3,15 +3,19 @@
     <head>
         <meta charset="utf-8">
         <title>Tomcat WebSocket Test</title>
-        <script type="text/javascript">/*
-            var ws = new WebSocket("ws://kojikoji.mydns.jp/service/WebSocketServer/Test");*/
-            var ws = new WebSocket("ws://localhost:8080/WebSocketServer/Post");
+        <script type="text/javascript">
+        	var domain = location.hostname;
+        	alert(domain);
+
+            var ws = new WebSocket("ws://"+domain+"/service/WebSocketServer/Post");/*
+            var ws = new WebSocket("ws://localhost:8080/WebSocketServer/Post");*/
             ws.onopen = function(){
             };
             ws.onmessage = function(message){
                 document.getElementById("chatlog").textContent += message.data + "\n";
             };
             function postToServer(){
+            	alert(document.getElementById("msg").value);
                 ws.send(document.getElementById("msg").value);
                 document.getElementById("msg").value = "";
             }
