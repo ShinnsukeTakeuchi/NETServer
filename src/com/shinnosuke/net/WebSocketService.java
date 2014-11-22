@@ -3,7 +3,6 @@ package com.shinnosuke.net;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,23 +42,5 @@ public class WebSocketService {
                 session.getBasicRemote().sendText(msg);
             }
         }catch(IOException e){}
-    }
-
-    class Room {
-    	private String roomName;
-    	private List<Session> users;
-    	public void sendUser(String userNamem) {
-
-    	}
-
-    	public void sendAll(String msg) throws IOException {
-    		for(Session session : users){
-                session.getBasicRemote().sendText(msg);
-            }
-    	}
-
-    	public void addSession(Session session) {
-    		users.add(session);
-    	}
     }
 }
