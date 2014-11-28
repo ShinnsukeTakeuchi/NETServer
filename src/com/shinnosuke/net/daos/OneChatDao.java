@@ -1,5 +1,7 @@
 package com.shinnosuke.net.daos;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,7 +21,21 @@ public class OneChatDao {
 
 	public OneChatDao() {}
 
-	public ArrayList<String> inRoom() {
+	public String searchRoom() throws NamingException, SQLException {
+		access.onOpen();
+		Connection con = access.getConnection();
+
+		PreparedStatement state = con.prepareStatement("select id from one_to_one where pair_user='' LIMIT 1");
+		ResultSet result = state.executeQuery();
+
+		if(result.next()) {
+			return result.getString("id");
+		}
+
+		return "";
+	}
+
+	public ArrayList<String> inRoom(String id) {
 		ArrayList<String> roomList = new ArrayList<String>();
 		boolean isLoop = true;
 
@@ -27,7 +43,7 @@ public class OneChatDao {
 			try {
 				int listCount = 0;
 				access.onOpen();
-				ResultSet res = access.setSqlQuery("select id from one_to_one where pair_user=''");
+				ResultSet res = access.setSqlQuery("select id from one_to_one where pair_user='' LIMIT 1");
 
 				while (res.next()) {
 					roomList.add(res.getString("id"));
