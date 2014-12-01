@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.Statement;
 
 import javax.naming.NamingException;
 
@@ -21,51 +21,59 @@ public class OneChatDao {
 
 	public OneChatDao() {}
 
-	public String searchRoom() throws NamingException, SQLException {
+	public String searchInRoom(String userName) throws NamingException, SQLException {
 		access.onOpen();
 		Connection con = access.getConnection();
 
 		PreparedStatement state = con.prepareStatement("select id from one_to_one where pair_user='' LIMIT 1");
 		ResultSet result = state.executeQuery();
 
-		if(result.next()) {
-			return result.getString("id");
-		}
+		if(result.next()) {//空室のチャットルームがある場合
+			String roomId = result.getString("id");
 
+			String updateSql = "update net_db.one_to_one set pair_user='"+userName+"' where id="+roomId+";";
+
+			Statement updateState = con.createStatement();
+			updateState.executeUpdate(updateSql);
+
+			return result.getString("id");
+		} else {//空室のチャットルームがない場合
+			String insertSql = "insert into net_db.one_to_one(owner_user, pair_user) values('"+userName+"', '');";
+			Statement insertState = con.createStatement();
+			insertState.executeUpdate(insertSql);
+			ResultSet insertRes = state.executeQuery();
+
+			if(insertRes.next()) {
+				return insertRes.getString("id");
+			}
+		}
 		return "";
 	}
 
-	public ArrayList<String> inRoom(String id) {
-		ArrayList<String> roomList = new ArrayList<String>();
-		boolean isLoop = true;
-
-		while (isLoop) {
-			try {
-				int listCount = 0;
-				access.onOpen();
-				ResultSet res = access.setSqlQuery("select id from one_to_one where pair_user='' LIMIT 1");
-
-				while (res.next()) {
-					roomList.add(res.getString("id"));
-					listCount++;
-				}
-
-				if (listCount == 0) {
-					access.setSqlUpdate("insert into one_to_one (owner_user, pair_user) values('user','')");
-					continue;
-				} else if (listCount > 0) {
-					isLoop = false;
-				}
-				access.onClose();
-			} catch (NamingException e) {
-				// エラー不具合あり
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// エラー不具合あり
-				e.printStackTrace();
-			}
-		}
-		return roomList;
+	public boolean inRoom(String roomId, String userName) {
+		boolean isCheck = false;
+//		try {
+////			int listCount = 0;
+////			access.onOpen();
+////			ResultSet res = access.setSqlQuery("select id from one_to_one where pair_user='' LIMIT 1");
+////
+////			while (res.next()) {
+////				listCount++;
+////			}
+////
+////			if (listCount == 0) {
+////				access.setSqlUpdate("insert into one_to_one (owner_user, pair_user) values('user','')");
+////			} else if (listCount > 0) {
+////			}
+////			access.onClose();
+//		} catch (NamingException e) {
+//			// エラー不具合あり
+//			e.printStackTrace();
+//		} catch (SQLException e) {
+//			// エラー不具合あり
+//			e.printStackTrace();
+//		}
+		return isCheck;
 	}
 
 	public void outRoom(String roomName) {

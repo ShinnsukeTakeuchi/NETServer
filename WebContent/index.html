@@ -6,12 +6,29 @@
         <script type="text/javascript">
         	var domain = location.hostname;
         	alert(domain);
+        	var userName = prompt("あなたのお名前は？");
 
-            var ws = new WebSocket("ws://"+domain+":8080/WebSocketServer/Post");/*
-            var ws = new WebSocket("ws://localhost:8080/WebSocketServer/Post");*/
-            ws.onopen = function(){
-            };
-            ws.onmessage = function(message){
+        	try{
+	        	var request = new XMLHttpRequest();
+	        	var servletUrl = "http://"+domain+":8080/WebSocketServer/SearchRoom?userName="+userName;
+	        	var send = "send";
+	        	request.open("GET", servletUrl, false);
+	       		request.send(send);
+
+	       		var roomId = request.response;
+	       		alert(roomId);
+        	}
+        	catch(err){
+        		alert("失敗しました");
+        	}
+
+        	var ws = new WebSocket("ws://"+domain+":8080/WebSocketServer/Post/"+roomId);
+        	alert("ws://"+domain+":8080/WebSocketServer/Post/"+roomId);
+        	//function openWebsocket() {
+	            ws.onopen = function(){
+	            };
+        	//}
+        	ws.onmessage = function(message){
                 document.getElementById("chatlog").textContent += message.data + "\n";
             };
             function postToServer(){
@@ -28,5 +45,10 @@
         <input id="msg" type="text" />
         <button type="submit" id="sendButton" onClick="postToServer()">Send!</button>
         <button type="submit" id="sendButton" onClick="closeConnect()">End</button>
+
+        <form action="SearchRoom" method="GET">
+        	<input type="submit" value="送信" />
+        	<input type="hidden" value="inRoom" name="value" />
+        </form>
     </body>
 </html>

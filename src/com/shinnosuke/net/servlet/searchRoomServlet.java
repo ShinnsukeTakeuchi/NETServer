@@ -36,18 +36,25 @@ public class searchRoomServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 
+		String value = request.getParameter("value");
+		String userName = request.getParameter("userName");
+
 		OneChatDao dao = new OneChatDao();
 
 		try {
-			String roomId = dao.searchRoom();
-
-			out.println(roomId);
+			if(userName != null && !userName.isEmpty()) {
+				String roomId = dao.searchInRoom(userName);
+				if(roomId != null && roomId.length()>=1){
+					out.println(roomId);
+				}
+			} else {
+				out.println("ユーザー名が指定されていません");
+			}
 		} catch (NamingException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
