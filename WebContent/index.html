@@ -5,7 +5,7 @@
         <title>Tomcat WebSocket Test</title>
         <script type="text/javascript">
         	var domain = location.hostname;
-        	alert(domain);
+        	//alert(domain);
         	var userName = prompt("あなたのお名前は？");
 
         	try{
@@ -16,14 +16,14 @@
 	       		request.send(send);
 
 	       		var roomId = request.response;
-	       		alert(roomId);
+	       		//alert(roomId);
         	}
         	catch(err){
         		alert("失敗しました");
         	}
 
         	var ws = new WebSocket("ws://"+domain+":8080/WebSocketServer/Post/"+roomId);
-        	alert("ws://"+domain+":8080/WebSocketServer/Post/"+roomId);
+        	//alert("ws://"+domain+":8080/WebSocketServer/Post/"+roomId);
         	//function openWebsocket() {
 	            ws.onopen = function(){
 	            };

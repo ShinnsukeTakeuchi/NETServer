@@ -19,7 +19,8 @@ public class WebSocketService {
 	private static ArrayList<Session> sessionList = new ArrayList<Session>();
 	private static Map<Integer,ArrayList<Session>> sessions = new HashMap<Integer, ArrayList<Session>>();
 
-	RoomMember rm = new RoomMember();
+	private static RoomMember rm = new RoomMember();
+//	RoomMember rm = new RoomMember();
 
     @OnOpen
     public void onStart(Session session, @PathParam("roomId") String roomId){
@@ -27,7 +28,9 @@ public class WebSocketService {
 //            sessionList.add(session);
         	rm.setMemberList(roomId, session);
             session.getBasicRemote().sendText("〇〇さんが入室しました。");
-        }catch(IOException e){}
+        }catch(IOException e){
+        	e.printStackTrace();
+        }
     }
 
     @OnClose

@@ -1,12 +1,14 @@
 package com.shinnosuke.net.beans;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.websocket.Session;
 
 public class RoomMember {
-	private static Map<String, ArrayList<Session>> allList;
+	private Map<String, ArrayList<Session>> allList = new HashMap<String, ArrayList<Session>>();
+//	private static Map<String, ArrayList<Session>> allList = new HashMap<String, ArrayList<Session>>();
 
 	public ArrayList<Session> getMemberList(String roomId) {
 		return allList.get(roomId);
