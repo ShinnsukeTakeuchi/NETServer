@@ -1,11 +1,11 @@
 package com.shinnosuke.net.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +34,8 @@ public class searchRoomServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setCharacterEncoding("UTF-8");
-		PrintWriter out = response.getWriter();
+		response.setContentType("text/html");
+		ServletOutputStream sos = response.getOutputStream();
 
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, DELETE, OPTIONS");
@@ -50,10 +51,16 @@ public class searchRoomServlet extends HttpServlet {
 			if(userName != null && !userName.isEmpty()) {
 				String roomId = dao.searchInRoom(userName);
 				if(roomId != null && roomId.length()>=1){
-					out.println(roomId);
+					response.setStatus(HttpServletResponse.SC_OK);
+
+					sos.println(roomId);
+					sos.close();
+//					out.println(roomId);
 				}
 			} else {
-				out.println("ユーザー名が指定されていません");
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				sos.println("Bad request!");
+				sos.println("Not found user name");
 			}
 		} catch (NamingException e) {
 			e.printStackTrace();
