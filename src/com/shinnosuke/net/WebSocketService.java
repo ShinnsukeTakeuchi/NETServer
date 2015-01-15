@@ -1,7 +1,9 @@
 package com.shinnosuke.net;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +13,9 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.shinnosuke.net.beans.RoomMember;
 
@@ -27,10 +32,23 @@ public class WebSocketService {
         try{
 //            sessionList.add(session);
         	rm.setMemberList(roomId, session);
-            session.getBasicRemote().sendText("〇〇さんが入室しました。");
+
+        	Date date = new Date();
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+
+        	JSONObject json = new JSONObject();
+        	JsonEscape escJson = new JsonEscape();
+        	json.put("userId", "BestOwner");
+			json.put("userName", "運営者");
+			json.put("messeage", "ゲストが入室しました。");
+			json.put("date", sdf.format(date));
+
+            session.getBasicRemote().sendText(escJson.getString(json));
         }catch(IOException e){
         	e.printStackTrace();
-        }
+        } catch (JSONException e) {
+			e.printStackTrace();
+		}
     }
 
     @OnClose
