@@ -29,14 +29,39 @@
 	            };
         	//}
         	ws.onmessage = function(message){
+        		var jsonStr = message.data;
+        		var jsonObj = JSON.parse(jsonStr);
                 document.getElementById("chatlog").textContent += message.data + "\n";
             };
             function postToServer(){
-                ws.send(document.getElementById("msg").value);
-                document.getElementById("msg").value = "";
+            	if(window.JSON) {
+            		var date = new Date();
+            		var strDate = toLocaleString(date);
+
+            		var jsonObj = {
+    						"userId":"testUser",
+    						"userName":userName,
+    						"messeage":document.getElementById("msg").value,
+    						"date":strDate
+            		};
+					var mesStr = '{"userId":"testUser","userName":userName,"messeage":document.getElementById("msg").value,"date":strDate}';
+            		//var mesStr = json.stringify(jsonObj):
+            		ws.send(mesStr);
+                    //ws.send(document.getElementById("msg").value);
+                    document.getElementById("msg").value = "";
+            	}
             }
             function closeConnect(){
                 ws.close();
+            }
+            function toLocaleString( date )
+            {
+                return [
+                    date.getFullYear(),
+                    date.getMonth() + 1,
+                    date.getDate()
+                    ].join( '.' ) + ' '
+                    + date.toLocaleTimeString();
             }
         </script>
     </head>
