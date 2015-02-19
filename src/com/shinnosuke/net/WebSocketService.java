@@ -33,17 +33,32 @@ public class WebSocketService {
 //            sessionList.add(session);
         	rm.setMemberList(roomId, session);
 
+        	JSONObject json = new JSONObject();
+        	JsonEscape escJson = new JsonEscape();
+        	ArrayList<Session> sessions = rm.getMemberList(roomId);
+
         	Date date = new Date();
         	SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
-        	JSONObject json = new JSONObject();
-        	JsonEscape escJson = new JsonEscape();
-        	json.put("userId", "BestOwner");
-			json.put("userName", "運営者");
-			json.put("messeage", "ゲストが入室しました。");
-			json.put("date", sdf.format(date));
+        	if(rm.getMemberList(roomId).size()==2) {
+            	json.put("userId", "BestOwner");
+    			json.put("userName", "システムくん");
+    			json.put("messeage", "チャット相手が揃いました。");
+    			json.put("date", sdf.format(date));
 
-            session.getBasicRemote().sendText(escJson.getString(json));
+    			for(Session ses : sessions){
+                    //asynchronous communication
+    				ses.getBasicRemote().sendText(escJson.getString(json));
+                }
+        	} else {
+            	json.put("userId", "BestOwner");
+    			json.put("userName", "システムくん");
+    			json.put("messeage", "チャット相手を待っています。");
+    			json.put("date", sdf.format(date));
+
+				session.getBasicRemote().sendText(escJson.getString(json));
+        	}
+
         }catch(IOException e){
         	e.printStackTrace();
         } catch (JSONException e) {
@@ -58,10 +73,8 @@ public class WebSocketService {
 
     @OnMessage
     public void onMessage(String msg, Session getSession, @PathParam("roomId") String roomId){
-//    	Set<Session> sessions = getSession.getOpenSessions();
     	ArrayList<Session> sessions = rm.getMemberList(roomId);
         try{
-//            for(Session session : sessionList){
         	for(Session session : sessions){
                 //asynchronous communication
                 session.getBasicRemote().sendText(msg);
